@@ -1,37 +1,38 @@
+drop table if exists users, movies, taginfo, genres, ratings, tags, hasagenre;
+
 CREATE TABLE users (
-userid INTEGER,
-name CHAR(100),
+userid integer NOT NULL,
+name text,
 PRIMARY KEY (userid));
 
 CREATE TABLE movies(
-movieid INTEGER,
-title CHAR(100),
+movieid integer NOT NULL,
+title text,
 PRIMARY KEY (movieid));
 
 CREATE TABLE taginfo(
-tagid INTEGER,
-content CHAR(100),
-PRIMARY KEY (tagid);
+tagid integer NOT NULL,
+content text,
+PRIMARY KEY (tagid));
 
 CREATE TABLE genres(
-genreid INTEGER,
-name CHAR(100),
+genreid integer NOT NULL,
+name text NOT NULL,
 PRIMARY KEY (genreid));
 
 CREATE TABLE ratings(
-userid INTEGER,
-movieid INTEGER,
-rating REAL,
+userid integer NOT NULL,
+movieid integer NOT NULL,
+rating numeric NOT NULL CHECK (rating>=0 AND rating<=5),
 timestamp BIGINT,
-CHECK (rating>=0.5 AND rating<=5),
 PRIMARY KEY (userid, movieid),
 FOREIGN KEY (userid) REFERENCES users,
 FOREIGN KEY (movieid) REFERENCES movies);
 
 CREATE TABLE tags(
-userid INTEGER,
-movieid INTEGER,
-tagid INTEGER,
+userid integer  NOT NULL,
+movieid integer  NOT NULL,
+tagid integer  NOT NULL,
 timestamp BIGINT,
 PRIMARY KEY (userid, movieid, tagid),
 FOREIGN KEY (tagid) REFERENCES taginfo,
@@ -39,9 +40,8 @@ FOREIGN KEY (userid) REFERENCES users,
 FOREIGN KEY (movieid) REFERENCES movies);
 
 CREATE TABLE hasagenre(
-movieid INTEGER,
-genreid INTEGER,
-PRIMARY KEY (movieid, genreid),
+movieid integer  NOT NULL,
+genreid integer  NOT NULL,
 FOREIGN KEY (movieid) REFERENCES movies,
 FOREIGN KEY (genreid) REFERENCES genres);
 
@@ -52,3 +52,7 @@ Failed testcases are
 -0.2 insert duplicate rating
 -0.2 insert non-exist foreign key which references to genreid
 -0.2 insert an invalid rating which is larger than 5
+
+https://tecadmin.net/install-pgadmin4-on-ubuntu/
+
+https://www.postgresql.org/docs/10/ddl-constraints.html
