@@ -1,31 +1,54 @@
-create table users(
-userid INT NOT NULL PRIMARY KEY,
-name CHAR(100) NOT NULL);
+CREATE TABLE users (
+userid INTEGER,
+name CHAR(100),
+PRIMARY KEY (userid));
 
-create table movies(
-movieid INT NOT NULL PRIMARY KEY,
-title CHAR(100) NOT NULL);
+CREATE TABLE movies(
+movieid INTEGER,
+title CHAR(100),
+PRIMARY KEY (movieid));
 
-create table taginfo(
-tagid INT NOT NULL PRIMARY KEY,
-content CHAR(100) NOT NULL);
+CREATE TABLE taginfo(
+tagid INTEGER,
+content CHAR(100),
+PRIMARY KEY (tagid);
 
-create table genres(
-genreid INT NOT NULL PRIMARY KEY,
-name CHAR(100));
+CREATE TABLE genres(
+genreid INTEGER,
+name CHAR(100),
+PRIMARY KEY (genreid));
 
-create table ratings(
-rating INT NOT NULL CHECK (rating>=1 AND rating<=5),
+CREATE TABLE ratings(
+userid INTEGER,
+movieid INTEGER,
+rating REAL,
 timestamp BIGINT,
-userid INT REFERENCES users(userid),
-movieid INT REFERENCES movies(movieid));
+CHECK (rating>=0.5 AND rating<=5),
+PRIMARY KEY (userid, movieid),
+FOREIGN KEY (userid) REFERENCES users,
+FOREIGN KEY (movieid) REFERENCES movies);
 
-create table tags(
+CREATE TABLE tags(
+userid INTEGER,
+movieid INTEGER,
+tagid INTEGER,
 timestamp BIGINT,
-userid INT REFERENCES users(userid),
-movieid INT REFERENCES movies(movieid),
-tagid INT REFERENCES taginfo(tagid));
+PRIMARY KEY (userid, movieid, tagid),
+FOREIGN KEY (tagid) REFERENCES taginfo,
+FOREIGN KEY (userid) REFERENCES users,
+FOREIGN KEY (movieid) REFERENCES movies);
 
-create table hasagenre(
-movieid INT REFERENCES movies(movieid),
-genreid INT REFERENCES genres(genreid));
+CREATE TABLE hasagenre(
+movieid INTEGER,
+genreid INTEGER,
+PRIMARY KEY (movieid, genreid),
+FOREIGN KEY (movieid) REFERENCES movies,
+FOREIGN KEY (genreid) REFERENCES genres);
+
+
+Failed testcases are
+-0.2 insert example data
+-0.2 insert non-exist foreign key which references to movieid
+-0.2 insert duplicate rating
+-0.2 insert non-exist foreign key which references to genreid
+-0.2 insert an invalid rating which is larger than 5
